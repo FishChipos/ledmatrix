@@ -1,14 +1,11 @@
+#include "patterns.ino"
+
 #define PIN_START 0
 #define PIN_END 15
 // 16 pins for the x and y direction
 int xy[4][4];
 // 4 pins for the z direction
 int z[4];
-
-// Patterns formatted as xy index (4 * x + y), z
-int pattern1[][2] = {
-  {xy[0][0], z[0]}, {xy[0][1], z[0]}
-};
 
 inline void pulse_led(int xy, int z) {
   digitalWrite(xy, HIGH);
@@ -17,31 +14,28 @@ inline void pulse_led(int xy, int z) {
   digitalWrite(z, LOW);
 }
 
-void run_pattern(int *pattern, int duration) {
-  int elapsed = 0;
-  int last = millis();
+void run_pattern(bool *pattern, int duration) {
+  // For keeping track of time elapsed
+  size_t last = millis();
+  size_t curr = millis();
 
-  int arr_size = sizeof(&pattern) / sizeof((&pattern)[0]);
+  int frame_count = sizeof(pattern) / sizeof(pattern[0]);
+  int frame_duration = duration / frame_count;
 
-  loop:
-  while (true) {
-    for (size_t i = 0; i < arr_size; i++) {
-      if (elapsed >= duration) {
-        goto loop_end;
+  for (size_t frame = 0; frame < frame_count; frame++) {
+    int frame_elapsed = 0;
+    for (size_t index = 0; index < 64; index++) {
+      if (frame_elapsed > frame_duration) {
+        break;
       }
+      bool val = &pattern[frame][index];
+      // TO BE CONTINUED
 
-      int xy = (&pattern)[i][0];
-      int z = (&pattern)[i][1];
-      pulse_led(xy, z);
-
-      // Keep track of time
-      int curr = millis();
-      elapsed += curr - last;
+      curr = millis();
+      frame_elapsed += curr - last;
       last = curr;
     }
   }
-  loop_end:
-  return;
 }
 
 void setup() {
@@ -62,6 +56,7 @@ void setup() {
     pinMode(i, OUTPUT);
   }
 
+  run_pattern(*pattern_template, 2000);
 }
 
 void loop() {
