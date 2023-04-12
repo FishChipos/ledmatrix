@@ -1,4 +1,4 @@
-#include "patterns.ino"
+#include "patterns.h"
 
 #define PIN_START 0
 #define PIN_END 15
@@ -28,7 +28,7 @@ void run_pattern(bool *pattern, int duration) {
       if (frame_elapsed > frame_duration) {
         break;
       }
-      bool val = &pattern[frame][index];
+      bool val = (&pattern)[frame][index];
       // TO BE CONTINUED
 
       curr = millis();
@@ -56,7 +56,7 @@ void setup() {
     pinMode(i, OUTPUT);
   }
 
-  run_pattern(*pattern_template, 2000);
+  run_pattern(*pat_template, 2000);
 }
 
 void loop() {
