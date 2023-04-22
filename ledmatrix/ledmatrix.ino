@@ -29,7 +29,7 @@ void run_pattern(bool *pattern, int duration) {
         break;
       }
       bool val = (&pattern)[frame][index];
-      // TO BE CONTINUED
+      // TO BE CONTINUED hahah
 
       curr = millis();
       frame_elapsed += curr - last;
