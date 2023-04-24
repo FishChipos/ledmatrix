@@ -1,13 +1,11 @@
 #include "patterns.h"
 
-// test
-
 #define PIN_START 0
 #define PIN_END 15
 // 16 pins for the x and y direction
-int xy[4][4];
+int pins_xy[4][4];
 // 4 pins for the z direction
-int z[4];
+int pins_z[4];
 
 inline void pulse_led(int xy, int z) {
   digitalWrite(xy, HIGH);
@@ -31,7 +29,22 @@ void run_pattern(bool *pattern, int duration) {
         break;
       }
       bool val = (&pattern)[frame][index];
-      // TO BE CONTINUED hahah
+      
+      size_t pat_x = index % 8;
+      size_t pat_y = index / 8;
+
+      size_t led_x = pat_x % 4;
+      size_t led_y = pat_y % 4;
+      size_t led_z = 0;
+
+      if (pat_x >= 4) {
+        led_z += 1;
+      }
+      if (pat_y >= 4) {
+        led_z += 2;
+      }
+
+      pulse_led(pins_xy[led_x][led_y], pins_z[led_z]);
 
       curr = millis();
       frame_elapsed += curr - last;
@@ -47,14 +60,14 @@ void setup() {
   for (size_t i = PIN_START; i < (PIN_END + 1) / 4; i++) {
     for (size_t j = 4 * i; j < 4 * (i + 1); j++) {
       Serial.println(i * 4 + j);
-      xy[i][j] = i * 4 + j;
+      pins_xy[i][j] = i * 4 + j;
       pinMode(i * 4 + j, OUTPUT);
     }
   }
 
   for (size_t i = PIN_END + 1; i < PIN_END + 5; i++) {
     Serial.println(i);
-    z[i] = i;
+    pins_z[i] = i;
     pinMode(i, OUTPUT);
   }
 
