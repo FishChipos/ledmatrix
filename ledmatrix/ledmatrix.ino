@@ -1,5 +1,7 @@
 #include "patterns.h"
 
+// test
+
 #define PIN_START 0
 #define PIN_END 15
 // 16 pins for the x and y direction
