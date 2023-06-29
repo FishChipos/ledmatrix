@@ -1,6 +1,10 @@
 import sys
 from PIL import Image, ImageSequence
 
+# Fix GIFS
+from PIL import GifImagePlugin
+GifImagePlugin.LOADING_STRATEGY = GifImagePlugin.LoadingStrategy.RGB_ALWAYS
+
 LAYER_SIZE = 4
 
 # Pattern and target filepaths
