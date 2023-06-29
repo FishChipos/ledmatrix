@@ -10,6 +10,7 @@ int pins_z[4];
 
 // We pulse to avoid unwanted activations of other LEDs.
 void pulse_led(int xy, int z) {
+  // Output input bullshittery to prevent shorts and stuff
   pinMode(xy, OUTPUT);
   pinMode(z, OUTPUT);
   digitalWrite(xy, LOW);
@@ -35,24 +36,13 @@ void run_pattern(bool *pattern, size_t frame_count, size_t duration) {
           continue;
         }
         
-        // Coordinates as seen on the pattern.
-        size_t pat_x = index % 8;
-        size_t pat_y = index / 8;
+        size_t z = index / 16;
+        
+        size_t y = (index % 16) / 4;
+        size_t x = (index % 16) % 4;
+        size_t xy = 4 * y + x;
   
-        // Coordinates transferred to the LED matrix.
-        size_t led_x = pat_x % 4;
-        size_t led_y = pat_y % 4;
-        size_t led_xy = led_y * 4 + led_x;
-        size_t led_z = 0;
-  
-        if (pat_x >= 4) {
-          led_z += 1;
-        }
-        if (pat_y >= 4) {
-          led_z += 2;
-        }
-  
-        pulse_led(pins_xy[led_xy], pins_z[led_z]);
+        pulse_led(pins_xy[xy], pins_z[z]);
   
         curr = millis();
         frame_elapsed += curr - last;
@@ -66,6 +56,23 @@ void run_pattern(bool *pattern, size_t frame_count, size_t duration) {
 
 void setup() {
 
+  // Initialize pins.
+  // Serial.println("XY Pins");
+  // for (size_t i = 0; i < (PIN_END - PIN_START + 1) / 4; i++) {
+  //   for (size_t j = 0; j < 4; j++) {
+  //     Serial.println(i * 4 + j);
+  //     pins_xy[i][j] = i * 4 + j;
+  //     pinMode(i * 4 + j, OUTPUT);
+  //   }
+  // }
+
+  // Serial.println("Z Pins");
+  // for (size_t i = PIN_END + 1; i < PIN_END + 5; i++) {
+  //   Serial.println(i);
+  //   pins_z[i] = i; 
+  //   pinMode(i, OUTPUT);
+  // }
+
   // Pins 14 and up are treated as analog pins for digitalWrite().
   for (int xy = 0; xy < 16; xy++) {
     pins_xy[xy] = xy;
@@ -74,8 +81,8 @@ void setup() {
     pins_z[z] = z + 16;
   }
 
-  size_t frame_count = sizeof(pat_dot) / sizeof(pat_dot[0]);
-  run_pattern(*pat_dot, frame_count, 50000);
+  size_t frame_count = sizeof(pat_template) / sizeof(pat_template[0]);
+  run_pattern(*pat_template, frame_count, 5000);
 
 
 //  for (size_t z = 0; z < 4; z++) {
@@ -91,7 +98,17 @@ void setup() {
 //      pinMode(pins_z[z], INPUT);
 //    }
 //  }
+
+//  digitalWrite(0, LOW);
+//  digitalWrite(12, LOW);
+//  digitalWrite(13, HIGH);
+//  digitalWrite(14, LOW);
+//  digitalWrite(16, HIGH);
+//  delay(1000);
+//  digitalWrite(12, HIGH);
 }
 
 void loop() {
+   //pulse_led(pins_xy[0], pins_z[0]);
+   //pulse_led(pins_xy[0], pins_z[1]);
 }

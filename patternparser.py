@@ -1,8 +1,7 @@
 import sys
-from PIL import Image, ImageSequence
+from PIL import Image, ImageSequence, GifImagePlugin
 
 # Fix GIFS
-from PIL import GifImagePlugin
 GifImagePlugin.LOADING_STRATEGY = GifImagePlugin.LoadingStrategy.RGB_ALWAYS
 
 LAYER_SIZE = 4
@@ -34,8 +33,8 @@ with Image.open(pattern) as im:
         frame_res = [[], [], [], []]
         pixels = frame.getdata()
         
-        for x in range(0, 4):
-            for y in range(0, 4):
+        for y in range(0, 4):
+            for x in range(0, 4):
                 frame_res[0].append(bool(pixels[(2 * LAYER_SIZE * y) + x][0]))
                 frame_res[1].append(bool(pixels[(2 * LAYER_SIZE * y) + x + LAYER_SIZE][0]))
                 frame_res[2].append(bool(pixels[(2 * LAYER_SIZE * y) + x + (2 * LAYER_SIZE * LAYER_SIZE)][0]))
