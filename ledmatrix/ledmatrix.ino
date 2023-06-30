@@ -30,7 +30,7 @@ void run_pattern(bool *pattern, size_t frame_count, size_t duration) {
     size_t frame_elapsed = 0;
     while (frame_elapsed < frame_duration) {
         for (size_t index = 0; index < 64; index++) {
-        bool val = pattern + index;
+        bool val = *(pattern + index);
 
         if (!val) {
           continue;
