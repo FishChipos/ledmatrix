@@ -81,8 +81,8 @@ void setup() {
     pins_z[z] = z + 16;
   }
 
-  size_t frame_count = sizeof(pat_template) / sizeof(pat_template[0]);
-  run_pattern(*pat_template, frame_count, 5000);
+  size_t frame_count = sizeof(pat_box) / sizeof(pat_box[0]);
+  run_pattern(*pat_box, frame_count, 5000);
 
 
 //  for (size_t z = 0; z < 4; z++) {
