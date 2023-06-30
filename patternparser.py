@@ -50,6 +50,7 @@ with open(target, "w+") as out:
     content = content.lower()
     
     out.write(content)
-print(res)
+    
+# print(res)
         
         
