@@ -20,13 +20,13 @@ void pulse_led(int xy, int z) {
 }
 
 void run_pattern(bool *pattern, size_t frame_count, size_t duration) {
-  // For keeping track of time elapsed.
-  size_t last = millis();
-  size_t curr = millis();
 
   size_t frame_duration = duration / frame_count;
 
   for (size_t frame = 0; frame < frame_count; frame++) {
+    // For keeping track of time elapsed.
+    size_t last = millis();
+    size_t curr = millis();
     size_t frame_elapsed = 0;
     while (frame_elapsed < frame_duration) {
         for (size_t index = 0; index < 64; index++) {
