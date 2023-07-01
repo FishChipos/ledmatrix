@@ -19,60 +19,55 @@ void pulse_led(int xy, int z) {
   pinMode(z, INPUT);
 }
 
-void run_pattern(bool *pattern, size_t frame_count, size_t duration) {
-
+void run_pattern(Byte *pattern, size_t frame_count, size_t duration) {
   size_t frame_duration = duration / frame_count;
 
   for (size_t frame = 0; frame < frame_count; frame++) {
-    // For keeping track of time elapsed.
+    // For timekeeping.
     size_t last = millis();
     size_t curr = millis();
     size_t frame_elapsed = 0;
-    while (frame_elapsed < frame_duration) {
-        for (size_t index = 0; index < 64; index++) {
-        bool val = *(pattern + index + frame * 64);
 
-        if (!val) {
-          continue;
+    // Run frame for specified time.
+    while (frame_elapsed < frame_duration) {
+
+      // Loop through bytes in the frame.
+      for (size_t index = 0; index < 8; index++) {
+        Byte byte = *(pattern + index + 8 * frame);
+
+        // Loop through bits in the byte.
+        for (int bit = 0, mask = 128; bit < 8; bit++, mask = mask >> 1) {
+          // Get the value of the bit.
+          bool val = byte & mask;
+
+          if (!val) {
+            continue;
+          }
+
+          // Each layer has 2 bytes so to get the z just divide by 2.
+          size_t z = index / 2;
+
+          // The bit is divided by 4, and if its the second byte in that layer then offset by 2.
+          size_t y = (bit / 4) + (index % 2) * 2;
+          // The x can purely be gotten from the bit, as it's value just ranges from 0 to 7.
+          size_t x = (bit % 4);
+
+          // 4 pixels per row so y contributes 4 to the index.
+          size_t xy = 4 * y + x;
+
+          pulse_led(pins_xy[xy], pins_z[z]);
+
+          // Get time that has elapsed on this bit.
+          curr = millis();
+          frame_elapsed += curr - last;
+          last = curr;
         }
-        
-        size_t z = index / 16;
-        
-        size_t y = (index % 16) / 4;
-        size_t x = (index % 16) % 4;
-        size_t xy = 4 * y + x;
-  
-        pulse_led(pins_xy[xy], pins_z[z]);
-  
-        curr = millis();
-        frame_elapsed += curr - last;
-        last = curr;
       }
     }
   }
 }
 
-
-
 void setup() {
-
-  // Initialize pins.
-  // Serial.println("XY Pins");
-  // for (size_t i = 0; i < (PIN_END - PIN_START + 1) / 4; i++) {
-  //   for (size_t j = 0; j < 4; j++) {
-  //     Serial.println(i * 4 + j);
-  //     pins_xy[i][j] = i * 4 + j;
-  //     pinMode(i * 4 + j, OUTPUT);
-  //   }
-  // }
-
-  // Serial.println("Z Pins");
-  // for (size_t i = PIN_END + 1; i < PIN_END + 5; i++) {
-  //   Serial.println(i);
-  //   pins_z[i] = i; 
-  //   pinMode(i, OUTPUT);
-  // }
-
   // Pins 14 and up are treated as analog pins for digitalWrite().
   for (int xy = 0; xy < 16; xy++) {
     pins_xy[xy] = xy;
@@ -81,8 +76,8 @@ void setup() {
     pins_z[z] = z + 16;
   }
 
-  size_t frame_count = sizeof(pat_box) / sizeof(pat_box[0]);
-  run_pattern(*pat_box, frame_count, 5000);
+  size_t frame_count = sizeof(pat_template) / sizeof(pat_template[0]);
+  run_pattern(*pat_template, frame_count, 5000);
 
 
 //  for (size_t z = 0; z < 4; z++) {
@@ -98,17 +93,7 @@ void setup() {
 //      pinMode(pins_z[z], INPUT);
 //    }
 //  }
-
-//  digitalWrite(0, LOW);
-//  digitalWrite(12, LOW);
-//  digitalWrite(13, HIGH);
-//  digitalWrite(14, LOW);
-//  digitalWrite(16, HIGH);
-//  delay(1000);
-//  digitalWrite(12, HIGH);
 }
 
 void loop() {
-   //pulse_led(pins_xy[0], pins_z[0]);
-   //pulse_led(pins_xy[0], pins_z[1]);
 }
