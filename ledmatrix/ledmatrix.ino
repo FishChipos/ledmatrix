@@ -37,6 +37,11 @@ void run_pattern(Byte *pattern, size_t frame_count, size_t duration) {
 
         // Loop through bits in the byte.
         for (int bit = 0, mask = 128; bit < 8; bit++, mask = mask >> 1) {
+          // Get time that has elapsed on this bit.
+          curr = millis();
+          frame_elapsed += curr - last;
+          last = curr;
+          
           // Get the value of the bit.
           bool val = byte & mask;
 
@@ -57,10 +62,7 @@ void run_pattern(Byte *pattern, size_t frame_count, size_t duration) {
 
           pulse_led(pins_xy[xy], pins_z[z]);
 
-          // Get time that has elapsed on this bit.
-          curr = millis();
-          frame_elapsed += curr - last;
-          last = curr;
+          
         }
       }
     }
