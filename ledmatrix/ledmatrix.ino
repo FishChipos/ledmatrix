@@ -76,8 +76,17 @@ void setup() {
     pins_z[z] = z + 16;
   }
 
-  size_t frame_count = sizeof(pat_template) / sizeof(pat_template[0]);
-  run_pattern(*pat_template, frame_count, 5000);
+//  size_t frame_count = sizeof(pat_gradient) / sizeof(pat_gradient[0]);
+//  run_pattern(*pat_gradient, frame_count, 3000);
+
+  size_t frame_count = sizeof(pat_box) / sizeof(pat_box[0]);
+  run_pattern(*pat_box, frame_count, 2000);
+
+  frame_count = sizeof(pat_spin) / sizeof(pat_spin[0]);
+  run_pattern(*pat_spin, frame_count, 2000);
+
+  frame_count = sizeof(pat_shootcorner) / sizeof(pat_shootcorner[0]);
+  run_pattern(*pat_shootcorner, frame_count, 30000);
 
 
 //  for (size_t z = 0; z < 4; z++) {
